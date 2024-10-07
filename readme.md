@@ -1,6 +1,5 @@
 # Data Engineering Sandbox
-
-This project is a data engineering sandbox that integrates several powerful tools and technologies to provide a robust environment for data processing, storage, and analysis. The sandbox includes:
+This project is a data engineering sandbox that integrates several tools and technologies to provide an environment for data processing, storage, and analysis. The sandbox includes:
 
 - **Apache Hive**: SQL-based data warehouse for managing large datasets.
 - **Apache Spark**: Engine for large-scale data processing, including streaming, SQL, machine learning, and graph processing.
