@@ -1,0 +1,22 @@
+services:
+
+  mysql:
+    platform: linux/amd64
+
+  hive-metastore:
+    platform: linux/amd64
+
+  hive-server:
+    platform: linux/amd64
+
+  spark:
+    platform: linux/amd64
+
+  spark-worker:
+    platform: linux/amd64
+  
+  mongodb:
+    platform: linux/amd64
+
+  trino:
+    platform: linux/amd64
