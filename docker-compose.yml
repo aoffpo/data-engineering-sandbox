@@ -84,7 +84,7 @@ services:
     volumes:
       - mongo-data:/data/db
       - ./invoice.csv:/invoice.csv
-      - ./init-script.sh:/docker-entrypoint-initdb.d/init-script.sh  # Mount the init script
+      - ./init-script.sh:/docker-entrypoint-initdb.d/init-script.sh
 
   trino:
     image: trinodb/trino:latest
