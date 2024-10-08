@@ -3,7 +3,7 @@ services:
     image: mysql:latest
     container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_DATABASE: hive_metastore
       MYSQL_USER: hiveuser
       MYSQL_PASSWORD: hivepassword
@@ -11,17 +11,27 @@ services:
       - "3306:3306"
     networks:
       - my_network
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./Chinook_MySql.sql:/docker-entrypoint-initdb.d/Chinook_MySql.sql
 
   hive-metastore:
     image: bde2020/hive:2.3.2-postgresql-metastore
     container_name: hive-metastore
     environment:
-      POSTGRES_DB: hive_metastore
-      HIVE_METASTORE_USER: hiveuser
-      HIVE_METASTORE_PASSWORD: hivepassword
-      HIVE_METASTORE_DB_TYPE: mysql
-      HIVE_METASTORE_DB_HOSTNAME: mysql
-      HIVE_METASTORE_DB_PORT: 3306
+      HIVE_METASTORE_DB_TYPE: "mysql"
+      HIVE_METASTORE_DB_HOST: "mysql-host"
+      HIVE_METASTORE_DB_PORT: "3306"
+      HIVE_METASTORE_DB_NAME: "hive"
+      HIVE_METASTORE_DB_USERNAME: "hiveuser"
+      HIVE_METASTORE_DB_PASSWORD: "hivepassword"
+      HIVE_METASTORE_DB_SCHEMA_VERIFICATION: "false"
+      # POSTGRES_DB: hive_metastore
+      # HIVE_METASTORE_USER: hiveuser
+      # HIVE_METASTORE_PASSWORD: hivepassword
+      # HIVE_METASTORE_DB_TYPE: mysql
+      # HIVE_METASTORE_DB_HOSTNAME: mysql
+      # HIVE_METASTORE_DB_PORT: 3306
     depends_on:
       - mysql
     ports:
@@ -47,9 +57,9 @@ services:
     environment:
       - SPARK_MODE=master
       - SPARK_MASTER_HOST=spark
-      - HIVE_METASTORE_URI=thrift://hive-metastore:9083
     ports:
       - "8080:8080" # Spark Web UI
+      - "7077:7077"
     networks:
       - my_network
 
@@ -59,7 +69,6 @@ services:
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark:7077
-      - HIVE_METASTORE_URI=thrift://hive-metastore:9083
     depends_on:
       - spark
     networks:
@@ -72,6 +81,10 @@ services:
       - "27017:27017"
     networks:
       - my_network
+    volumes:
+      - mongo-data:/data/db
+      - ./invoice.csv:/invoice.csv
+      - ./init-script.sh:/docker-entrypoint-initdb.d/init-script.sh  # Mount the init script
 
   trino:
     image: trinodb/trino:latest
@@ -83,7 +96,15 @@ services:
       - "8081:8080" # Trino Web UI
     networks:
       - my_network
+    volumes:
+      - ./trino-config/catalog:/etc/trino/catalog  # Mount configuration directory
+      - ./trino-config/presto:/data/presto
+      - ./warehouse:/opt/hive/data/warehouse
 
 networks:
   my_network:
     driver: bridge
+
+volumes:
+  mysql_data:
+  mongo-data:
