@@ -24,7 +24,6 @@ drop database if exists `chinook`;
 ********************************************************************************/
 create database `chinook`;
 
-
 use `chinook`;
 
 

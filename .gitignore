@@ -147,3 +147,5 @@ cython_debug/
 
 # VS Code
 .vscode/
+
+metastore_db/
